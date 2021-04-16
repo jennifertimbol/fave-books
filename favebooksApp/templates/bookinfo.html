@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favorite Books</title>
+</head>
+
+<body>
+    <h2>Welcome, {{logged_user.first_name}}!</h2>
+    <hr>
+    {% if logged_user.id == current_book.uploaded_by.id %}
+    <form action="/books/{{current_book.id}}/edit" method="POST">
+    {% csrf_token %}
+        <h3>{{current_book.title}}</h3>
+        <p>Added by: {{current_book.uploaded_by.first_name}}</p>
+        <p>Added on: {{current_book.created_at}}</p>
+        <p>Last updated on: {{current_book.updated_at}}</p>
+        <label for="desc">Description:</label>
+        <input type="text" name="desc" value="{{current_book.desc}}">
+        <input type="submit" value="Update">
+    </form>
+    <form action="/books/{{book.id}}/delete" method="POST">
+    {% csrf_token %}
+        <input type="submit" value="Delete">
+    </form>
+    {% else %}
+        <h3>{{current_book.title}}</h3>
+        <p>Added by: {{current_book.uploaded_by.first_name}}</p>
+        <p>Added on: {{current_book.created_at}}</p>
+        <p>Last updated on: {{current_book.updated_at}}</p>
+        <p>Description: {{current_book.desc}}</p>
+        
+        
+        
+        {% endif %}
+        <hr>
+        
+        <h3>Users Who Like This Book:</h3>
+        {% for users in user_who_favorited %}
+            <p>{{users.first_name}} {{users.last_name}}</p>
+        {% endfor %}
+        {% if logged_user in user_who_favorited %}
+            <a href="/books/{{current_book.id}}/unfavebook">un-favorite</a>
+        {% else %}
+            <a href="/books/{{current_book.id}}/favebook">add this to your favorites</a>
+        {% endif %}
+        <br>
+        <a href="/logout"> Log out </a>
+        <br>
+        <a href="/books">Go Back</a>
+</body>
+
+</html>
